@@ -1,0 +1,12 @@
+{
+  "fin" : {
+    "currency" : [
+      "create",
+      "read"
+    ],
+    "currency-pair" : [
+      "create",
+      "read"
+    ]
+  }
+}

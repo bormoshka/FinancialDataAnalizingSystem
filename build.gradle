@@ -1,0 +1,40 @@
+group = 'ru.ulmc.bank'
+version = '1.0'
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
+apply from: 'repositories.gradle', to: allprojects
+
+sourceCompatibility = 1.8
+
+buildscript {
+    ext {
+        springBootVersion = '1.5.2.RELEASE'
+        mainClassName = 'ru.ulmc.BankApplication'
+        libs = [
+                springBoot   : [
+                        "org.springframework.boot:spring-boot-starter-aop:${springBootVersion}",
+                        "org.springframework.boot:spring-boot-starter-web:${springBootVersion}",
+                        "org.springframework.boot:spring-boot-starter-thymeleaf:${springBootVersion}"
+                ],
+                springBootJpa: [
+                        "org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}"
+                ],
+                sql          : "org.postgresql:postgresql:+",
+                gson         : "com.google.code.gson:gson:2.7",
+                javax        : "javax.servlet:javax.servlet-api:3.0.1",
+                test         : "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
+        ]
+        mods = [model: [project(':core:model')],
+                core : [project(":core")]]
+    }
+    apply from: 'repositories.gradle', to: buildscript
+
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
