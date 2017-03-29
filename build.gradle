@@ -18,6 +18,7 @@ buildscript {
         libs = [
                 springBoot   : [
                         "org.springframework.boot:spring-boot-starter-aop:${springBootVersion}",
+                        "org.springframework.boot:spring-boot-starter-security:${springBootVersion}",
                         "org.springframework.boot:spring-boot-starter-web:${springBootVersion}",
                         "org.springframework.boot:spring-boot-starter-thymeleaf:${springBootVersion}"
                 ],
@@ -27,7 +28,8 @@ buildscript {
                 sql          : "org.postgresql:postgresql:+",
                 gson         : "com.google.code.gson:gson:2.7",
                 javax        : "javax.servlet:javax.servlet-api:3.0.1",
-                test         : "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
+                test         : "org.springframework.boot:spring-boot-starter-test:${springBootVersion}",
+                lombok       : "org.projectlombok:lombok:1.16.16"
         ]
         mods = [model: [project(':core:model')],
                 core : [project(":core")]]

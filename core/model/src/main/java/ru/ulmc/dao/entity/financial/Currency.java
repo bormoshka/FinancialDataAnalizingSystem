@@ -1,5 +1,6 @@
 package ru.ulmc.dao.entity.financial;
 
+import lombok.Data;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -9,6 +10,7 @@ import java.util.List;
 /**
  * Валюта
  */
+@Data
 @Entity
 @Table(name = "FIN_CURRENCY",
         indexes = {@Index(name = "currency_code_index", columnList = "code", unique = true)})
@@ -31,30 +33,6 @@ public class Currency {
     @OrderBy("createDate DESC")
     private List<CurrencyAttributes> attributes;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
-    }
-
     public CurrencyAttributes getAttributes() {
         if (attributes != null)
             return attributes.get(0);
@@ -68,5 +46,4 @@ public class Currency {
         this.attributes.add(0, attribute);
     }
 
-    //todo: hash + equals
 }

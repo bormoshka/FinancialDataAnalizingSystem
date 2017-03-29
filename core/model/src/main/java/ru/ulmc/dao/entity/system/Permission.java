@@ -1,10 +1,13 @@
 package ru.ulmc.dao.entity.system;
 
+import lombok.Data;
+
 import javax.persistence.*;
 
 /**
  * Разрешение/права на выполнение действий.
  */
+@Data
 @Entity
 @Table(name = "SYS_PERMISSION",
         indexes = {@Index(name = "PERMISSION_ID_INDX", columnList = "ID", unique = true)})
@@ -15,33 +18,13 @@ public class Permission {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @OneToOne( optional = true)
+    @OneToOne
     private Permission parent;
 
     @Column(name = "CODE", nullable = false)
     private String code;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Permission getParent() {
-        return parent;
-    }
-
-    public void setParent(Permission parent) {
-        this.parent = parent;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
+    public Permission(String code) {
         this.code = code;
     }
 }

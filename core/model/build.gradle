@@ -6,5 +6,6 @@ apply plugin: 'maven'
 
 dependencies {
     compile libs.springBootJpa
+    compileOnly libs.lombok
     testCompile libs.test
 }

@@ -1,11 +1,14 @@
 package ru.ulmc.dao.entity.system;
 
+import lombok.Data;
+
 import javax.persistence.*;
-import java.util.Set;
+import java.util.Collection;
 
 /**
  * Пользователь системы
  */
+@Data
 @Entity
 @Table(name = "SYS_USER",
         indexes = {@Index(name = "USER_ID_LOGIN", columnList = "id, login", unique = true)})
@@ -16,47 +19,28 @@ public class User {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @Column(name = "LOGIN")
+    @Column(name = "LOGIN", nullable = false)
     private String login;
 
-    @Column(name = "FULLNAME")
+    @Column(name = "FULLNAME", nullable = false)
     private String fullName;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "SYS_USER_TO_PERMISSION",
-            joinColumns = {@JoinColumn(name = "USER_ID", nullable = false, updatable = false)},
-            inverseJoinColumns = {@JoinColumn(name = "PERMISSION_ID", nullable = false, updatable = false)})
-    private Set<Permission> permissions;
+    @Column(name = "IS_ENABLED", nullable = false)
+    private boolean enabled;
 
-    public Long getId() {
-        return id;
-    }
+    @Column(name = "PASSWORD", nullable = false)
+    private String password;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    @Column(name = "IS_TOKEN_EXPIRED")
+    private boolean tokenExpired;
 
-    public String getLogin() {
-        return login;
-    }
+    @ManyToMany
+    @JoinTable(
+            name = "SYS_USERS_ROLES",
+            joinColumns = @JoinColumn(
+                    name = "USER_ID", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(
+                    name = "ROLE_ID", referencedColumnName = "id"))
+    private Collection<UserRole> roles;
 
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public Set<Permission> getPermissions() {
-        return permissions;
-    }
-
-    public void setPermissions(Set<Permission> permissions) {
-        this.permissions = permissions;
-    }
 }
