@@ -1,4 +1,6 @@
-include 'database-filler'
-include 'core'
-include 'core:model'
+//include 'database-filler'
+include 'application'
+include 'application:core'
+include 'application:model'
+include 'application:client'
 

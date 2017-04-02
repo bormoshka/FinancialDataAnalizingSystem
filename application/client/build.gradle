@@ -1,0 +1,25 @@
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'maven'
+
+dependencies {
+    compile libs.springBoot,
+            libs.vaadin,
+            libs.springBootWeb,
+            mods.core,
+            libs.guava
+    compileOnly libs.lombok
+    testCompile libs.test
+}
+
+jar {
+    baseName = 'bank'
+    version = '1.0'
+    from 'src/main/webapp'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "com.vaadin:vaadin-bom:8.0.5"
+    }
+}
