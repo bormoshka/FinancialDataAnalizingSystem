@@ -7,6 +7,7 @@ import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.*;
 import com.vaadin.shared.Position;
 import com.vaadin.spring.annotation.SpringUI;
+import com.vaadin.spring.server.SpringVaadinServlet;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.themes.ValoTheme;
@@ -18,7 +19,6 @@ import ru.ulmc.bank.ui.data.Text;
 import ru.ulmc.bank.ui.data.provider.RuText;
 import ru.ulmc.bank.ui.event.UiEventBus;
 import ru.ulmc.bank.ui.event.UiEvents;
-import ru.ulmc.bank.ui.view.LoginView;
 import ru.ulmc.bank.ui.view.MainView;
 
 import javax.servlet.annotation.WebServlet;
@@ -30,7 +30,7 @@ import javax.servlet.annotation.WebServlet;
  * The UI is initialized using {@link #init(VaadinRequest)}. This method is intended to be
  * overridden to add component to the user interface and initialize non-component functionality.
  */
-@SpringUI
+@SpringUI(path = "/app/*")
 @Title("Система Управления Котировками")
 @Theme("bank")
 public class AppUI extends UI {
@@ -59,29 +59,7 @@ public class AppUI extends UI {
             removeStyleName("loginview");
             //getNavigator().navigateTo(getNavigator().getState());
         } else {
-            setContent(new LoginView());
-            addStyleName("loginview");
-        }
-    }
-
-    @Subscribe
-    public void userLoginRequested(UiEvents.UserLoginRequestedEvent event) {
-        try {
-            User user = authenticationController.authenticate(event.getUserName(), event.getPassword());
-            VaadinSession.getCurrent().setAttribute(User.class.getName(), user);
-            updateContent();
-        } catch (AuthenticationException e) {
-            Notification notification = new Notification(text.authErrorHeader());
-            if (e.isSystemFault()) {
-                notification.setDescription(text.authErrorSystemFault(e.getMessage()));
-            } else {
-                notification.setDescription(text.authErrorBaseText());
-            }
-            notification.setHtmlContentAllowed(true);
-            notification.setStyleName("tray dark small closable userName-help");
-            notification.setPosition(Position.BOTTOM_CENTER);
-            notification.setDelayMsec(10000);
-            notification.show(Page.getCurrent());
+            throw new RuntimeException("auth Error");
         }
     }
 
@@ -103,9 +81,9 @@ public class AppUI extends UI {
         return text;
     }
 
-    @WebServlet(urlPatterns = "/*", name = "AppServlet", asyncSupported = true)
+    @WebServlet(urlPatterns = {"/app/*", "/VAADIN/*"}, name = "AppServlet", asyncSupported = true)
     @VaadinServletConfiguration(ui = AppUI.class, productionMode = false)
-    public static class AppServlet extends VaadinServlet {
+    public static class AppServlet extends SpringVaadinServlet {
 
     }
 

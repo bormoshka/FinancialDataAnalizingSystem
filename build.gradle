@@ -19,7 +19,7 @@ buildscript {
         libs = [
                 springBoot   : [
                         "org.springframework.boot:spring-boot-starter-aop:${springBootVersion}",
-                        //"org.springframework.boot:spring-boot-starter-security:${springBootVersion}",
+                        "org.springframework.boot:spring-boot-starter-security:${springBootVersion}",
                         "org.springframework.boot:spring-boot-starter-thymeleaf:${springBootVersion}"
                 ],
                 springBootWeb: ["org.springframework.boot:spring-boot-starter-web:${springBootVersion}"],

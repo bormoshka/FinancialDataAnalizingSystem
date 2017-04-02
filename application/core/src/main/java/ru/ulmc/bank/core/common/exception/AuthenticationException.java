@@ -4,12 +4,14 @@ import lombok.Getter;
 
 public class AuthenticationException extends Exception {
     @Getter private boolean isSystemFault = false;
+    private static final String DEFAULT_MESSAGE = "Ошибка аутентификации!";
+
     public AuthenticationException() {
-        super();
+        super(DEFAULT_MESSAGE);
     }
 
     public AuthenticationException(Throwable cause) {
-        super("Ошибка аутентификации!", cause);
+        super(DEFAULT_MESSAGE, cause);
         isSystemFault = true;
     }
 

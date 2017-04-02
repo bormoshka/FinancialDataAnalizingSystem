@@ -1,18 +1,31 @@
 package ru.ulmc.bank.core.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.ulmc.bank.core.common.Roles;
 import ru.ulmc.bank.core.common.exception.AuthenticationException;
 import ru.ulmc.bank.core.service.UserService;
+import ru.ulmc.bank.dao.entity.system.Permission;
 import ru.ulmc.bank.dao.entity.system.User;
+import ru.ulmc.bank.dao.entity.system.UserRole;
 import ru.ulmc.bank.dao.repository.UserRepository;
 import ru.ulmc.bank.dao.repository.UserRoleRepository;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 
 @Service
 @Transactional
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
     private final UserRoleRepository roleRepository;
@@ -24,53 +37,20 @@ public class UserServiceImpl implements UserService {
     }
     @Override
     public User getUserByLoginAndEncodedPassword(String login, String encodedPassword) throws AuthenticationException {
+        User user = null;
         try {
-            User user = userRepository.findByLoginAndPassword(login, encodedPassword);
-            if (user == null) {
-                throw new AuthenticationException();
-            }
-            return user;
+            user = userRepository.findByLoginAndPassword(login, encodedPassword);
         } catch (Exception ex) {
             throw new AuthenticationException(ex);
         }
-    }
-}
-
-/*
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import ru.ulmc.bank.core.common.Roles;
-import ru.ulmc.bank.dao.entity.system.Permission;
-import ru.ulmc.bank.dao.entity.system.User;
-import ru.ulmc.bank.dao.entity.system.UserRole;
-import ru.ulmc.bank.dao.repository.UserRoleRepository;
-import ru.ulmc.bank.dao.repository.UserRepository;
-
-import java.util.*;
-
-
-// Сервис поиска и конвертации пользователей приложения в ползователей Spring
-
-@Service
-@Transactional
-public class UserServiceImpl implements UserDetailsService {
-
-    private final UserRepository userRepository;
-    private final UserRoleRepository roleRepository;
-
-    @Autowired
-    public UserServiceImpl(UserRepository userRepository, UserRoleRepository roleRepository) {
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
+        if (user == null) {
+            throw new AuthenticationException();
+        }
+        return user;
     }
 
     @Override
-    public UserDetails getUserByLoginAndPassword(String login) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
 
         User user = userRepository.findByLogin(login);
         if (user == null) {
@@ -110,4 +90,4 @@ public class UserServiceImpl implements UserDetailsService {
         return authorities;
     }
 
-}*/
+}

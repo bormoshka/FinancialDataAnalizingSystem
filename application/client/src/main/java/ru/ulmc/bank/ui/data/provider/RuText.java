@@ -5,7 +5,6 @@ import ru.ulmc.bank.ui.data.Text;
 /**
  * Created by User on 02.04.2017.
  */
-/**/
 public class RuText implements Text {
     @Override
     public String userName() {
@@ -44,7 +43,7 @@ public class RuText implements Text {
 
     @Override
     public String authErrorHeader() {
-        return "Ошибка авторизации";
+        return "Вход в систему не выполнен!";
     }
 
     @Override

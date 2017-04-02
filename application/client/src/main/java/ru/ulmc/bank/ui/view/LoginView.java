@@ -6,12 +6,15 @@ import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.Responsive;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.ulmc.bank.ui.data.Text;
 import ru.ulmc.bank.ui.AppUI;
-import ru.ulmc.bank.ui.event.UiEventBus;
+import ru.ulmc.bank.ui.event.AuthEventBus;
 import ru.ulmc.bank.ui.event.UiEvents;
 
 public class LoginView extends VerticalLayout {
+    private static final Logger logger = LoggerFactory.getLogger(LoginView.class);
     private Text text;
 
     private Button signin;
@@ -19,10 +22,12 @@ public class LoginView extends VerticalLayout {
     public LoginView() {
         text = AppUI.getTextProvider();
         setSizeFull();
-        UiEventBus.register(this);
+        AuthEventBus.register(this);
         Component loginForm = buildLoginForm();
         addComponent(loginForm);
         setComponentAlignment(loginForm, Alignment.MIDDLE_CENTER);
+        Button btn = new Button("Do somthing stupid");
+        addComponent(btn);
     }
 
     private Component buildLoginForm() {
@@ -68,16 +73,16 @@ public class LoginView extends VerticalLayout {
         fields.addComponents(title, username, password, signin);
 
         signin.addClickListener((Button.ClickListener) event -> {
-            UiEventBus.post(new UiEvents.UserLoginRequestedEvent(username.getValue(), password.getValue()));
+            AuthEventBus.post(new UiEvents.UserLoginRequestedEvent(username.getValue(), password.getValue()));
         });
         return fields;
     }
 
     @Subscribe
-    public void userLoggedOut(UiEvents.UserLoginResponseEvent event) {
+    public void userAction(UiEvents.UserLoginResponseEvent event) {
         signin.setEnabled(true);
         if (event.isSucceeded()) {
-            UiEventBus.unregister(this);
+            AuthEventBus.unregister(this);
         }
     }
 
