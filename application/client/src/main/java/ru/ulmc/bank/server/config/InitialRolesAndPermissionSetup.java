@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ru.ulmc.bank.core.common.Perms;
@@ -13,10 +14,13 @@ import ru.ulmc.bank.dao.entity.system.Permission;
 import ru.ulmc.bank.dao.entity.system.User;
 import ru.ulmc.bank.dao.entity.system.UserRole;
 import ru.ulmc.bank.dao.repository.PermissionRepository;
-import ru.ulmc.bank.dao.repository.UserRoleRepository;
 import ru.ulmc.bank.dao.repository.UserRepository;
+import ru.ulmc.bank.dao.repository.UserRoleRepository;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Класс, отвечающий за инициализацию пользовательский холей и разрешений.
@@ -28,24 +32,23 @@ public class InitialRolesAndPermissionSetup implements ApplicationListener<Conte
     private final UserRepository userRepository;
     private final UserRoleRepository roleRepository;
     private final PermissionRepository permissionRepository;
-   // private final BCryptPasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
     private boolean alreadySetup = false;
 
     @Autowired
     public InitialRolesAndPermissionSetup(UserRepository userRepository,
                                           UserRoleRepository roleRepository,
-                                          PermissionRepository permissionRepository/*,
-                                          BCryptPasswordEncoder passwordEncoder*/) {
+                                          PermissionRepository permissionRepository,
+                                          PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.permissionRepository = permissionRepository;
-       // this.passwordEncoder = passwordEncoder;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {
-
         if (alreadySetup)
             return;
 
@@ -66,17 +69,33 @@ public class InitialRolesAndPermissionSetup implements ApplicationListener<Conte
         createRoleIfNotFound(Roles.MANAGER, managerPermissions);
         createRoleIfNotFound(Roles.MARKETING, marketingPermissions);
 
+        createSystemAdmin();
+        createDemoUser();
+        alreadySetup = true;
+    }
+
+    private void createSystemAdmin() {
         UserRole adminRole = roleRepository.findByName(Roles.ADMIN);
         User user = new User();
         user.setLogin("admin");
         user.setFullName("System Admin");
-       // user.setPassword(passwordEncoder.encode("admin"));
         user.setRoles(Collections.singleton(adminRole));
         user.setEnabled(true);
-        user.setPassword("admin");
+        user.setPassword(passwordEncoder.encode("admin"));
         userRepository.save(user);
+    }
 
-        alreadySetup = true;
+    private void createDemoUser() {
+        UserRole managerRole = roleRepository.findByName(Roles.MANAGER);
+        UserRole marketingRole = roleRepository.findByName(Roles.MARKETING);
+        UserRole auditorRole = roleRepository.findByName(Roles.AUDITOR);
+        User user = new User();
+        user.setLogin("manager");
+        user.setFullName("Demo manager");
+        user.setRoles(new HashSet<>(Arrays.asList(managerRole, marketingRole, auditorRole)));
+        user.setEnabled(true);
+        user.setPassword(passwordEncoder.encode("manager"));
+        userRepository.save(user);
     }
 
     @Transactional

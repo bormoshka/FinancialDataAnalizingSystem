@@ -9,4 +9,7 @@ public class Perms {
     public static final String SYS_USER_CREATE = "SYS_USER_CREATE";
     public static final String SYS_USER_EDIT = "SYS_USER_EDIT";
     public static final String SYS_USER_READ = "SYS_USER_READ";
+
+    public static final String CHECK_FIN_CURRENCY_READ = "hasAuthority('" + Perms.FIN_CURRENCY_READ + "')";
+
 }

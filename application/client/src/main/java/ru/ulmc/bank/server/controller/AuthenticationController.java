@@ -1,45 +1,46 @@
 package ru.ulmc.bank.server.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Controller;
 import ru.ulmc.bank.core.common.exception.AuthenticationException;
-import ru.ulmc.bank.core.service.UserService;
-import ru.ulmc.bank.core.service.impl.UserServiceImpl;
+import ru.ulmc.bank.core.common.security.UserPrincipal;
 import ru.ulmc.bank.dao.entity.system.User;
-import ru.ulmc.bank.server.config.UserSession;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Контроллер аутентификации
  */
 @Controller
 public class AuthenticationController {
+    private static final Logger LOG = LoggerFactory.getLogger(AuthenticationController.class);
 
-    private UserSession userSession;
+    private final AuthenticationManager authenticationManager;
 
-    private UserService userDetailsService;
-
-    private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public AuthenticationController(UserSession userSession,
-                                    UserServiceImpl userDetailsService,
-                                    PasswordEncoder passwordEncoder) {
-        this.userSession = userSession;
-        this.userDetailsService = userDetailsService;
-        this.passwordEncoder = passwordEncoder;
+    public AuthenticationController(AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
     }
 
-    public User authenticate(String login, String password) throws AuthenticationException {
-        User user =  userDetailsService.getUserByLoginAndEncodedPassword(login, encodePassword(password));
-        if (user != null) {
-            userSession.setUser(user);
+    public User authenticate(String login, String password, HttpServletRequest httpRequest) throws AuthenticationException {
+        try {
+            UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(login, password);
+            token.setDetails(new WebAuthenticationDetails(httpRequest));
+            Authentication authentication = authenticationManager.authenticate(token);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            return ((UserPrincipal) (authentication).getPrincipal()).getUser();
+        } catch (Exception ex) {
+            LOG.error("Auth error", ex);
+            throw new AuthenticationException(ex);
         }
-        return user;
-    }
-
-    private String encodePassword(String decodedPassword) {
-        return passwordEncoder.encode(decodedPassword);
     }
 }

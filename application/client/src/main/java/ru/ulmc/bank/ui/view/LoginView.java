@@ -8,9 +8,10 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.ulmc.bank.ui.data.Text;
+import ru.ulmc.bank.server.controller.Controllers;
 import ru.ulmc.bank.ui.AppUI;
-import ru.ulmc.bank.ui.event.AuthEventBus;
+import ru.ulmc.bank.ui.data.Text;
+import ru.ulmc.bank.ui.event.UiEventBus;
 import ru.ulmc.bank.ui.event.UiEvents;
 
 public class LoginView extends VerticalLayout {
@@ -19,14 +20,20 @@ public class LoginView extends VerticalLayout {
 
     private Button signin;
 
-    public LoginView() {
+    private Controllers controllers;
+
+    public LoginView(Controllers controllers) {
+        this.controllers = controllers;
         text = AppUI.getTextProvider();
         setSizeFull();
-        AuthEventBus.register(this);
+        UiEventBus.register(this);
         Component loginForm = buildLoginForm();
         addComponent(loginForm);
         setComponentAlignment(loginForm, Alignment.MIDDLE_CENTER);
         Button btn = new Button("Do somthing stupid");
+        btn.addClickListener(event -> {
+            controllers.getCurrencyController().getCurrency("RUB");
+        });
         addComponent(btn);
     }
 
@@ -73,7 +80,7 @@ public class LoginView extends VerticalLayout {
         fields.addComponents(title, username, password, signin);
 
         signin.addClickListener((Button.ClickListener) event -> {
-            AuthEventBus.post(new UiEvents.UserLoginRequestedEvent(username.getValue(), password.getValue()));
+            UiEventBus.post(new UiEvents.UserLoginRequestedEvent(username.getValue(), password.getValue()));
         });
         return fields;
     }
@@ -81,9 +88,6 @@ public class LoginView extends VerticalLayout {
     @Subscribe
     public void userAction(UiEvents.UserLoginResponseEvent event) {
         signin.setEnabled(true);
-        if (event.isSucceeded()) {
-            AuthEventBus.unregister(this);
-        }
     }
 
 }

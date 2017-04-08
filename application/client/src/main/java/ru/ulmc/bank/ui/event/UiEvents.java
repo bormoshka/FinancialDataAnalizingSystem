@@ -22,12 +22,6 @@ public abstract class UiEvents {
     }
 
     public static final class UserLoginResponseEvent {
-        @Getter
-        private final boolean succeeded;
-
-        public UserLoginResponseEvent(boolean succeeded) {
-            this.succeeded = succeeded;
-        }
     }
 
     public static class BrowserResizeEvent {

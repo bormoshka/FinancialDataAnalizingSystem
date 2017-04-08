@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import ru.ulmc.bank.server.filter.CharsetFilter;
 
 import javax.servlet.Filter;
@@ -22,13 +21,13 @@ public class SpringMvcConfig extends WebMvcConfigurerAdapter {
         //registry.addResourceHandler("/VAADIN/**").addResourceLocations("/resources/");
     }
 
-    @Bean
+    /*@Bean
     public InternalResourceViewResolver viewResolver() {
         InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
         viewResolver.setPrefix("/templates/");
         viewResolver.setSuffix(".html");
         return viewResolver;
-    }
+    }*/
 
     @Bean
     public Filter getCharsetFilter() {

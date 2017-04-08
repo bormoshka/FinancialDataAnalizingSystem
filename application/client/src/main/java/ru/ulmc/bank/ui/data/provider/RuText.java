@@ -48,6 +48,6 @@ public class RuText implements Text {
 
     @Override
     public String authErrorSystemFault(String errorText) {
-        return "<span><b>Произошла ошибка авторизации:</b> " + errorText +"</span>";
+        return "<span><b>Произошла ошибка авторизации:</b> " + errorText + "</span>";
     }
 }

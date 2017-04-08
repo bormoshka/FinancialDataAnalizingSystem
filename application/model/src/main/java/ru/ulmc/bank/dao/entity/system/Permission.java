@@ -24,4 +24,7 @@ public class Permission {
     public Permission(String name) {
         this.name = name;
     }
+
+    public Permission() {
+    }
 }

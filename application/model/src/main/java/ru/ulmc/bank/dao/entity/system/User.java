@@ -3,7 +3,6 @@ package ru.ulmc.bank.dao.entity.system;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.Collection;
 import java.util.Set;
 
 /**
@@ -35,10 +34,8 @@ public class User {
     @ManyToMany
     @JoinTable(
             name = "SYS_USERS_ROLES",
-            joinColumns = @JoinColumn(
-                    name = "USER_ID", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(
-                    name = "ROLE_ID", referencedColumnName = "id"))
+            joinColumns = @JoinColumn(name = "USER_ID", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "ROLE_ID", referencedColumnName = "id"))
     private Set<UserRole> roles;
 
 }

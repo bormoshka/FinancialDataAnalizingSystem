@@ -5,23 +5,26 @@ import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.*;
-import com.vaadin.shared.Position;
+import com.vaadin.shared.ui.window.WindowRole;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.spring.server.SpringVaadinServlet;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.themes.ValoTheme;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.ulmc.bank.core.common.exception.AuthenticationException;
 import ru.ulmc.bank.dao.entity.system.User;
-import ru.ulmc.bank.server.controller.AuthenticationController;
+import ru.ulmc.bank.server.config.UserSession;
+import ru.ulmc.bank.server.controller.Controllers;
+import ru.ulmc.bank.ui.common.MessageWindow;
 import ru.ulmc.bank.ui.data.Text;
 import ru.ulmc.bank.ui.data.provider.RuText;
 import ru.ulmc.bank.ui.event.UiEventBus;
 import ru.ulmc.bank.ui.event.UiEvents;
+import ru.ulmc.bank.ui.view.LoginView;
 import ru.ulmc.bank.ui.view.MainView;
 
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * This UI is the application entry point. A UI may either represent a browser window
@@ -30,58 +33,75 @@ import javax.servlet.annotation.WebServlet;
  * The UI is initialized using {@link #init(VaadinRequest)}. This method is intended to be
  * overridden to add component to the user interface and initialize non-component functionality.
  */
-@SpringUI(path = "/app/*")
+@SpringUI(path = "/*")
 @Title("Система Управления Котировками")
 @Theme("bank")
 public class AppUI extends UI {
 
-    @Autowired
-    private AuthenticationController authenticationController;
-
     private static Text text = new RuText();
-
     private final UiEventBus uiEventBus = new UiEventBus();
+    @Autowired
+    private Controllers controllers;
+    @Autowired
+    private MainView mainView;
+    @Autowired
+    private UserSession userSession;
+
+    public static UiEventBus getDashboardEventbus() {
+        return ((AppUI) getCurrent()).uiEventBus;
+    }
+
+    public static Text getTextProvider() {
+        return text;
+    }
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
         UiEventBus.register(this);
         Responsive.makeResponsive(this);
         addStyleName(ValoTheme.UI_WITH_MENU);
-        updateContent();
+        setupUiBasedOnUserStatus();
         Page.getCurrent().addBrowserWindowResizeListener(
                 (Page.BrowserWindowResizeListener) event -> UiEventBus.post(new UiEvents.BrowserResizeEvent()));
     }
 
-    private void updateContent() {
-        User user = (User) VaadinSession.getCurrent().getAttribute(User.class.getName());
-        if (user != null) {
-            setContent(new MainView());
-            removeStyleName("loginview");
+    private void setupUiBasedOnUserStatus() {
+        if (userSession.isAuthenticated()) {
+            setContent(mainView);
             //getNavigator().navigateTo(getNavigator().getState());
         } else {
-            throw new RuntimeException("auth Error");
+            setContent(new LoginView(controllers));
+        }
+    }
+
+    @Subscribe
+    public void userLoginRequested(UiEvents.UserLoginRequestedEvent event) {
+        try {
+            final HttpServletRequest request = ((VaadinServletRequest) VaadinService.getCurrentRequest())
+                    .getHttpServletRequest();
+            User user = controllers.getAuthenticationController().authenticate(event.getUserName(), event.getPassword(), request);
+            userSession.setUser(user);
+            VaadinSession.getCurrent().setAttribute(User.class.getName(), user);
+            Page.getCurrent().reload();
+        } catch (AuthenticationException ex) {
+            final MessageWindow window = new MessageWindow(text.authErrorHeader());
+            window.setText(ex.isSystemFault() ?
+                    text.authErrorSystemFault(ex.getMessage()) :
+                    text.authErrorBaseText());
+            window.setAssistiveRole(WindowRole.ALERTDIALOG);
+            addWindow(window);
+        } finally {
+            UiEventBus.post(new UiEvents.UserLoginResponseEvent());
         }
     }
 
     @Subscribe
     public void userLoggedOut(UiEvents.UserLoggedOutEvent event) {
-        // When the user logs out, current VaadinSession gets closed and the
-        // page gets reloaded on the userName screen. Do notice the this doesn't
-        // invalidate the current HttpSession.
         VaadinSession.getCurrent().close();
         Page.getCurrent().reload();
     }
 
-    public static UiEventBus getDashboardEventbus() {
-        return ((AppUI) getCurrent()).uiEventBus;
-    }
-
-
-    public static Text getTextProvider() {
-        return text;
-    }
-
-    @WebServlet(urlPatterns = {"/app/*", "/VAADIN/*"}, name = "AppServlet", asyncSupported = true)
+    @WebServlet(urlPatterns = {"/*", "/VAADIN/*"}, name = "AppServlet", asyncSupported = true)
     @VaadinServletConfiguration(ui = AppUI.class, productionMode = false)
     public static class AppServlet extends SpringVaadinServlet {
 

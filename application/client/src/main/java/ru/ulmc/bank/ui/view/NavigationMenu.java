@@ -7,8 +7,8 @@ import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import ru.ulmc.bank.dao.entity.system.User;
-import ru.ulmc.bank.ui.data.Text;
 import ru.ulmc.bank.ui.AppUI;
+import ru.ulmc.bank.ui.data.Text;
 import ru.ulmc.bank.ui.event.UiEventBus;
 import ru.ulmc.bank.ui.event.UiEvents;
 
