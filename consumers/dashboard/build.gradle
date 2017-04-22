@@ -1,28 +1,24 @@
 apply plugin: 'java'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'maven'
-//apply plugin: "fi.jasoft.plugin.vaadin"
 
 dependencies {
     compile libs.springBoot,
-            libs.springBootSecurity,
             libs.vaadin,
-            libs.springBootWeb,
-            mods.core,
-            libs.guava
-    compileOnly libs.lombok,
-            libs.vaadinProvided
+            libs.guava,
+            mods.api
+    compileOnly libs.lombok
     testCompile libs.test
 }
 
 springBoot {
-    mainClass = 'ru.ulmc.bank.BankApplication'
+    mainClass = 'ru.ulmc.bank.CourseDashboardApp'
 }
 
 jar {
-    baseName = 'bank'
+    baseName = 'consumer-dashboard'
     version = '1.0'
-    from 'src/main/webapp'
+   // from 'src/main/webapp'
 }
 
 dependencyManagement {

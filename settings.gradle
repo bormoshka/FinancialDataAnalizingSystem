@@ -3,4 +3,6 @@ include 'application'
 include 'application:core'
 include 'application:model'
 include 'application:client'
+include 'application:api'
+include 'consumers:dashboard'
 
