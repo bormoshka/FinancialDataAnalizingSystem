@@ -29,6 +29,7 @@ buildscript {
                         "org.springframework.boot:spring-boot-starter-aop:${springBootVersion}",
                         "org.springframework.boot:spring-boot-starter-thymeleaf:${springBootVersion}"
                 ],
+                springBootMQ      : ["org.springframework.boot:spring-boot-starter-amqp:${springBootVersion}"],
                 springBootSecurity: ["org.springframework.boot:spring-boot-starter-security:${springBootVersion}"],
                 springBootWeb     : ["org.springframework.boot:spring-boot-starter-web:${springBootVersion}"],
                 springBootJpa     : [
@@ -43,10 +44,10 @@ buildscript {
                 vaadin            : ["com.vaadin:vaadin-spring-boot-starter:+",
                                      'org.vaadin:spinkit:+',
                                      'com.vaadin:vaadin-sass-compiler:+'
-                                    // "com.vaadin:vaadin-client:+",
-                                    //  "com.vaadin:vaadin-client-compiler:+"
+                                     // "com.vaadin:vaadin-client:+",
+                                     //  "com.vaadin:vaadin-client-compiler:+"
                 ],
-                vaadinProvided : ["com.vaadin:vaadin-client:+"]
+                vaadinProvided    : ["com.vaadin:vaadin-client:+"]
         ]
         mods = [model : project(':application:model'),
                 core  : project(":application:core"),

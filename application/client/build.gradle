@@ -4,10 +4,8 @@ apply plugin: 'maven'
 //apply plugin: "fi.jasoft.plugin.vaadin"
 
 dependencies {
-    compile libs.springBoot,
-            libs.springBootSecurity,
+    compile libs.springBootWeb,
             libs.vaadin,
-            libs.springBootWeb,
             mods.core,
             libs.guava
     compileOnly libs.lombok,

@@ -1,9 +1,12 @@
 package ru.ulmc.bank.ui.data;
 
+import ru.ulmc.bank.ui.data.provider.RuText;
+
 /**
  * Created by User on 02.04.2017.
  */
 public interface Text {
+    Text ru = new RuText();
     String userName();
 
     String password();

@@ -8,8 +8,11 @@ import com.vaadin.server.Responsive;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.spring.server.SpringVaadinServlet;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.VerticalLayout;
 import org.springframework.beans.factory.annotation.Autowired;
+import ru.ulmc.bank.bus.SurrogateMessageStorage;
 import ru.ulmc.bank.ui.event.UiEventBus;
 import ru.ulmc.bank.ui.event.UiEvents;
 import ru.ulmc.bank.ui.view.BoardView;
@@ -31,6 +34,9 @@ public class DashboardUI extends UI {
     private final UiEventBus uiEventBus = new UiEventBus();
     @Autowired
     private BoardView boardView;
+    @Autowired
+    private SurrogateMessageStorage surrogateMessageStorage;
+    private Label label = new Label();
 
     public static UiEventBus getDashboardEventbus() {
         return ((DashboardUI) getCurrent()).uiEventBus;
@@ -42,7 +48,10 @@ public class DashboardUI extends UI {
         Responsive.makeResponsive(this);
         Page.getCurrent().addBrowserWindowResizeListener(
                 (Page.BrowserWindowResizeListener) event -> UiEventBus.post(new UiEvents.BrowserResizeEvent()));
-        setContent(boardView);
+        surrogateMessageStorage.getFifo().forEach(s -> {
+            label.setValue(label.getValue() + s + "\n");
+        });
+        setContent(new VerticalLayout(label, boardView));
     }
 
     @WebServlet(urlPatterns = {"/*", "/VAADIN/*"}, name = "AppServlet", asyncSupported = true)
@@ -50,5 +59,6 @@ public class DashboardUI extends UI {
     public static class AppServlet extends SpringVaadinServlet {
 
     }
+
 
 }

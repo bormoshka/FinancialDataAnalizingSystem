@@ -24,7 +24,7 @@ import javax.servlet.annotation.WebServlet;
  * overridden to add component to the user interface and initialize non-component functionality.
  */
 @SpringUI(path = "/admin/*")
-@Title("Администрирование АСУК")
+@Title("Администрирование АСУ КУРСЫ")
 @Theme("bank")
 public class AdminUI extends UI {
 

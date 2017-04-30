@@ -7,6 +7,7 @@ import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.*;
 import com.vaadin.shared.ui.window.WindowRole;
 import com.vaadin.spring.annotation.SpringUI;
+import com.vaadin.spring.navigator.SpringNavigator;
 import com.vaadin.spring.server.SpringVaadinServlet;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.themes.ValoTheme;
@@ -46,6 +47,8 @@ public class AppUI extends UI {
     private MainView mainView;
     @Autowired
     private UserSession userSession;
+    @Autowired
+    private SpringNavigator navigator;
 
     public static UiEventBus getDashboardEventbus() {
         return ((AppUI) getCurrent()).uiEventBus;
@@ -61,14 +64,15 @@ public class AppUI extends UI {
         Responsive.makeResponsive(this);
         addStyleName(ValoTheme.UI_WITH_MENU);
         setupUiBasedOnUserStatus();
-        Page.getCurrent().addBrowserWindowResizeListener(
-                (Page.BrowserWindowResizeListener) event -> UiEventBus.post(new UiEvents.BrowserResizeEvent()));
+        Page.getCurrent().addBrowserWindowResizeListener(event -> UiEventBus.post(new UiEvents.BrowserResizeEvent()));
+        //setNavigator(navigator);
+
     }
 
     private void setupUiBasedOnUserStatus() {
         if (userSession.isAuthenticated()) {
             setContent(mainView);
-            //getNavigator().navigateTo(getNavigator().getState());
+            // getNavigator().navigateTo(getNavigator().getState());
         } else {
             setContent(new LoginView(controllers));
         }

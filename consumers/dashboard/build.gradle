@@ -4,6 +4,7 @@ apply plugin: 'maven'
 
 dependencies {
     compile libs.springBoot,
+            libs.springBootMQ,
             libs.vaadin,
             libs.guava,
             mods.api

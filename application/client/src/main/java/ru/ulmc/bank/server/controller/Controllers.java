@@ -12,10 +12,12 @@ import org.springframework.stereotype.Component;
 public class Controllers {
     private final AuthenticationController authenticationController;
     private final CurrencyController currencyController;
+    private final PublishingController publishingController;
 
     @Autowired
-    public Controllers(AuthenticationController authenticationController, CurrencyController currencyController) {
+    public Controllers(AuthenticationController authenticationController, CurrencyController currencyController, PublishingController publishingController) {
         this.authenticationController = authenticationController;
         this.currencyController = currencyController;
+        this.publishingController = publishingController;
     }
 }

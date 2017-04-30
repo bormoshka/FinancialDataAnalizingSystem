@@ -19,7 +19,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                                 UserDetailsService userService,
                                 PasswordEncoder passwordEncoder) throws Exception {
         auth
-                // .authenticationProvider(new DaoAuthenticationProvider())
                 .userDetailsService(userService)
                 .passwordEncoder(passwordEncoder);
 
