@@ -8,7 +8,8 @@ dependencies {
             libs.vaadin,
             libs.guava,
             mods.api
-    compileOnly libs.lombok
+    compileOnly libs.lombok,
+            libs.vaadinProvided
     testCompile libs.test
 }
 

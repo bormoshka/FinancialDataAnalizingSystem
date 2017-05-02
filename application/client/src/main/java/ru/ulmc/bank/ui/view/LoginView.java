@@ -18,7 +18,7 @@ public class LoginView extends VerticalLayout {
     private static final Logger logger = LoggerFactory.getLogger(LoginView.class);
     private Text text;
 
-    private Button signin;
+    private Button signIn;
 
     private Controllers controllers;
 
@@ -72,14 +72,14 @@ public class LoginView extends VerticalLayout {
         password.addStyleName(ValoTheme.TEXTFIELD_INLINE_ICON);
         password.setWidth("100%");
 
-        signin = new Button(text.singIn());
-        signin.addStyleName(ValoTheme.BUTTON_PRIMARY);
-        signin.setClickShortcut(ShortcutAction.KeyCode.ENTER);
-        signin.setWidth("100%");
-        signin.setDisableOnClick(true);
-        fields.addComponents(title, username, password, signin);
+        signIn = new Button(text.singIn());
+        signIn.addStyleName(ValoTheme.BUTTON_PRIMARY);
+        signIn.setClickShortcut(ShortcutAction.KeyCode.ENTER);
+        signIn.setWidth("100%");
+        signIn.setDisableOnClick(true);
+        fields.addComponents(title, username, password, signIn);
 
-        signin.addClickListener((Button.ClickListener) event -> {
+        signIn.addClickListener((Button.ClickListener) event -> {
             UiEventBus.post(new UiEvents.UserLoginRequestedEvent(username.getValue(), password.getValue()));
         });
         return fields;
@@ -87,7 +87,7 @@ public class LoginView extends VerticalLayout {
 
     @Subscribe
     public void userAction(UiEvents.UserLoginResponseEvent event) {
-        signin.setEnabled(true);
+        signIn.setEnabled(true);
     }
 
 }

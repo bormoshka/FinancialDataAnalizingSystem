@@ -1,11 +1,15 @@
 package ru.ulmc.bank.ui.view;
 
 import com.vaadin.spring.annotation.SpringComponent;
+import com.vaadin.spring.annotation.ViewScope;
 import com.vaadin.ui.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
 import ru.ulmc.bank.server.controller.Controllers;
 
 @SpringComponent
+@Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class MainView extends HorizontalLayout {
     private final Controllers controllers;
 

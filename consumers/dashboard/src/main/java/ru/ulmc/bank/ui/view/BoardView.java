@@ -2,8 +2,11 @@ package ru.ulmc.bank.ui.view;
 
 import com.vaadin.data.provider.DataProvider;
 import com.vaadin.spring.annotation.SpringComponent;
+import com.vaadin.spring.annotation.ViewScope;
 import com.vaadin.ui.*;
 import com.vaadin.ui.renderers.NumberRenderer;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
 import ru.ulmc.bank.bean.Currency;
 import ru.ulmc.bank.bean.CurrencyRate;
 
@@ -15,6 +18,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 @SpringComponent
+@Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class BoardView extends HorizontalLayout {
     private SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yy HH:mm");
     private Label mainLabel = new Label(getLabelText());
