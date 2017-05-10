@@ -1,8 +1,9 @@
 package ru.ulmc.bank.ui.common;
 
-import com.vaadin.data.ValueProvider;
-import com.vaadin.ui.*;
-import com.vaadin.ui.renderers.AbstractRenderer;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Grid;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.VerticalLayout;
 
 /**
  * Created by User on 13.04.2017.

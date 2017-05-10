@@ -12,7 +12,6 @@ import ru.ulmc.bank.server.config.UserSession;
 import ru.ulmc.bank.server.controller.Controllers;
 
 import java.util.Collection;
-import java.util.Map;
 
 @SpringComponent
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)

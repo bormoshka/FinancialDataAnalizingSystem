@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.ldap.core.DirContextOperations;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,14 +15,10 @@ import ru.ulmc.bank.core.common.exception.AuthenticationException;
 import ru.ulmc.bank.core.common.security.UserPrincipal;
 import ru.ulmc.bank.core.service.impl.UserServiceImpl;
 import ru.ulmc.bank.dao.entity.system.User;
-import ru.ulmc.bank.dao.entity.system.UserRole;
 import ru.ulmc.bank.dao.repository.UserRoleRepository;
 import ru.ulmc.bank.server.config.security.AuthProvider;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
 
 /**
  * Контроллер аутентификации

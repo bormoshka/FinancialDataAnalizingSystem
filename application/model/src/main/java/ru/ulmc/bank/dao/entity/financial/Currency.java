@@ -1,8 +1,6 @@
 package ru.ulmc.bank.dao.entity.financial;
 
-import lombok.Data;
 import lombok.Getter;
-import lombok.Setter;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;

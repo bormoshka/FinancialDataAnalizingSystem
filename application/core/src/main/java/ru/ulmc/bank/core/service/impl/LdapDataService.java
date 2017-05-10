@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ldap.core.AttributesMapper;
 import org.springframework.ldap.core.DirContextOperations;
 import org.springframework.ldap.core.LdapTemplate;
-import org.springframework.ldap.query.SearchScope;
 import org.springframework.stereotype.Controller;
 import ru.ulmc.bank.pojo.ldap.LdapAttribute;
 
