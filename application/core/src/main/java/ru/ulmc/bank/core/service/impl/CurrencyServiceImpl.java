@@ -29,9 +29,7 @@ public class CurrencyServiceImpl {
     }
 
     public Currency createCurrency(String code, String title, int scale) {
-        Currency currency = new Currency();
-        currency.setActive(true);
-        currency.setCode(code);
+        Currency currency = new Currency(code, true);
 
         currencyRepository.save(currency);
         CurrencyAttributes attr = makeAttributes(currency, title, scale);

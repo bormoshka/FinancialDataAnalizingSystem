@@ -30,11 +30,6 @@ public class LoginView extends VerticalLayout {
         Component loginForm = buildLoginForm();
         addComponent(loginForm);
         setComponentAlignment(loginForm, Alignment.MIDDLE_CENTER);
-        Button btn = new Button("Do somthing stupid");
-        btn.addClickListener(event -> {
-            controllers.getCurrencyController().getCurrency("RUB");
-        });
-        addComponent(btn);
     }
 
     private Component buildLoginForm() {

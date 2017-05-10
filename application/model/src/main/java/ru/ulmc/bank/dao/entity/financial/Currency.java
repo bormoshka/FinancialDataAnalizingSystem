@@ -1,6 +1,8 @@
 package ru.ulmc.bank.dao.entity.financial;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -8,9 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Валюта
+ * Валюта. Неизменяемая сущность.
  */
-@Data
 @Entity
 @Table(name = "FIN_CURRENCY",
         indexes = {@Index(name = "currency_code_index", columnList = "code", unique = true)})
@@ -20,18 +21,29 @@ public class Currency {
     @Id
     @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Getter
     private Long id;
 
     @Column(name = "code", nullable = false, unique = true)
+    @Getter
     private String code;
 
     @Column(name = "is_active", nullable = false)
+    @Getter
     private boolean isActive;
 
     @OneToMany(mappedBy = "currency", fetch = FetchType.LAZY)
-    @Where(clause = "active = true")
+    @Where(clause = "is_current = true")
     @OrderBy("createDate DESC")
     private List<CurrencyAttributes> attributes;
+
+    public Currency() {
+    }
+
+    public Currency(String code, boolean isActive) {
+        this.code = code;
+        this.isActive = isActive;
+    }
 
     public CurrencyAttributes getAttributes() {
         if (attributes != null)

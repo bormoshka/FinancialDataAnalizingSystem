@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.ldap.userdetails.LdapUserDetailsImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.ulmc.bank.core.common.security.UserPrincipal;
@@ -13,9 +14,7 @@ import ru.ulmc.bank.dao.entity.system.UserRole;
 import ru.ulmc.bank.dao.repository.UserRepository;
 import ru.ulmc.bank.dao.repository.UserRoleRepository;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 
 @Service
@@ -42,6 +41,33 @@ public class UserServiceImpl implements UserDetailsService {
 
     public User findUser(String login) {
         return userRepository.findByLogin(login);
+    }
+
+    /**
+     * Создает нового пользователя в системе или обновляет уже существующего.
+     * использовать при работе с внешним источником аутентификационных данных.
+     *
+     * @param auth     Объект аутентификации пользователя LDAP
+     * @param fullname полное имя пользователя
+     */
+    public void createOrUpdateUser(LdapUserDetailsImpl auth, String fullname) {
+        User user = findUser(auth.getUsername());
+        if (user == null) {
+            user = new User();
+            user.setLogin(auth.getUsername());
+            user.setPassword(UUID.randomUUID().toString()); //not null поле, которое не спользуется
+        }
+        user.setEnabled(auth.isEnabled() && auth.isAccountNonLocked() && auth.isAccountNonExpired());
+        user.setFullName(fullname);
+        Set<UserRole> setOfRoles = new HashSet<>();
+        auth.getAuthorities().forEach(grantedAuthority -> {
+            UserRole role = roleRepository.findByName(grantedAuthority.getAuthority());
+            if (role != null) {
+                setOfRoles.add(role);
+            }
+        });
+        user.setRoles(setOfRoles);
+        userRepository.save(user);
     }
 
     private List<String> getPermissions(Collection<UserRole> roles) {

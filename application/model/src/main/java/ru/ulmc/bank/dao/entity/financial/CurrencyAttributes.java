@@ -1,12 +1,15 @@
 package ru.ulmc.bank.dao.entity.financial;
 
 import lombok.Data;
+import ru.ulmc.bank.dao.entity.system.User;
 
 import javax.persistence.*;
 import java.util.Date;
 
 /**
- * Атрибуты валюты
+ * Атрибуты валюты.
+ * Хранятся все атрибуты& последняя запись является актуальной.
+ * Храним историю атрибутов
  */
 @Data
 @Entity
@@ -32,8 +35,12 @@ public class CurrencyAttributes {
     @JoinColumn(referencedColumnName = "ID", name = "CURRENCY_ID")
     private Currency currency;
 
-    @Column(name = "active", nullable = false)
-    private boolean isActive;
+    @Column(name = "is_current", nullable = false)
+    private boolean isCurrent;
+
+    @ManyToOne
+    @JoinColumn(referencedColumnName = "ID", name = "CREATOR_ID")
+    private User creator;
 
     public CurrencyAttributes() {
     }
@@ -42,7 +49,7 @@ public class CurrencyAttributes {
         this.scale = scale;
         this.title = title;
         this.currency = currency;
-        this.isActive = true;
+        this.isCurrent = true;
         this.createDate = new Date();
     }
 }

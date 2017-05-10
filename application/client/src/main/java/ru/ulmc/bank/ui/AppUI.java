@@ -71,6 +71,7 @@ public class AppUI extends UI {
 
     private void setupUiBasedOnUserStatus() {
         if (userSession.isAuthenticated()) {
+            mainView.initView(userSession);
             setContent(mainView);
             // getNavigator().navigateTo(getNavigator().getState());
         } else {

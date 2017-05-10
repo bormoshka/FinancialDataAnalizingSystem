@@ -1,6 +1,7 @@
 package ru.ulmc.bank.dao.entity.financial;
 
 import lombok.Data;
+import ru.ulmc.bank.dao.entity.directory.CourseRange;
 
 import javax.persistence.*;
 
@@ -29,7 +30,14 @@ public class CurrencyPair {
     @JoinColumn(referencedColumnName = "ID", name = "QUOTED_CURRENCY_ID")
     private Currency quotedCurrency;
 
-    @Column(name = "IS_ACTIVE", nullable = false)
-    private boolean isActive;
+    @Column(name = "BID", nullable = false)
+    private Double bid;
+
+    @Column(name = "ASK", nullable = false)
+    private Double ask;
+
+    @ManyToOne
+    @JoinColumn(referencedColumnName = "ID", name = "COURSE_RANGE_ID")
+    private CourseRange range;
 
 }

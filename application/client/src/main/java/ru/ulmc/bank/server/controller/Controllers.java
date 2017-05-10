@@ -13,11 +13,16 @@ public class Controllers {
     private final AuthenticationController authenticationController;
     private final CurrencyController currencyController;
     private final PublishingController publishingController;
+    private final LdapController ldapController;
 
     @Autowired
-    public Controllers(AuthenticationController authenticationController, CurrencyController currencyController, PublishingController publishingController) {
+    public Controllers(AuthenticationController authenticationController,
+                       CurrencyController currencyController,
+                       PublishingController publishingController,
+                       LdapController ldapController) {
         this.authenticationController = authenticationController;
         this.currencyController = currencyController;
         this.publishingController = publishingController;
+        this.ldapController = ldapController;
     }
 }
