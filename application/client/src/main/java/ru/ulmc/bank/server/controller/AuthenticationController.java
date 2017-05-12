@@ -46,8 +46,9 @@ public class AuthenticationController {
 
     /**
      * Аутентифицирует пользователя по логину и паролю.
-     * @param login Имя пользователя в системе
-     * @param password пароль
+     *
+     * @param login       Имя пользователя в системе
+     * @param password    пароль
      * @param httpRequest объект запроса
      * @return сущность пользователя
      * @throws AuthenticationException если пользователь не найден или не соответствует пара логин/пароль

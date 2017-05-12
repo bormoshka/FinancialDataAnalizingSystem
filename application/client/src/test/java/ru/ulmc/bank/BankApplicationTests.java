@@ -14,7 +14,7 @@ import static org.junit.Assert.assertTrue;
 @ActiveProfiles("test")
 public class BankApplicationTests {
 
-   // @Autowired
+    // @Autowired
     UserRepository repository;
 
     @Test

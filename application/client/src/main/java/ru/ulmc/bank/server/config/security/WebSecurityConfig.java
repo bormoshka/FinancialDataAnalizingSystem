@@ -40,7 +40,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private String userPasswordField;
 
     @Value("${auth.ldap.attribute.fullname}")
-    private String fullnameAttribute;
+    private String fullname;
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth,
@@ -50,8 +50,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         if (AuthProvider.LDAP.name().equalsIgnoreCase(authProvider)) {
             auth
                     .ldapAuthentication()
-                    .userDnPatterns(userDnPatterns) //"uid={0},ou=people"
-                    .groupSearchBase(groupSearchBase)//"ou=groups"
+                    .userDnPatterns(userDnPatterns)
+                    .groupSearchBase(groupSearchBase)
                     .contextSource(contextSource)
                     .rolePrefix("")
                     .userDetailsContextMapper(new LdapUserDetailsMapper() {
@@ -59,13 +59,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         public UserDetails mapUserFromContext(DirContextOperations ctx, String username,
                                                               Collection<? extends GrantedAuthority> authorities) {
                             UserDetails user = super.mapUserFromContext(ctx, username, authorities);
-                            userService.createOrUpdateUser((LdapUserDetailsImpl) user, ctx.getStringAttribute(fullnameAttribute));
+                            userService.createOrUpdateUser((LdapUserDetailsImpl) user, ctx.getStringAttribute(fullname));
                             return user;
                         }
                     })
                     .passwordCompare()
                     .passwordEncoder(new LdapShaPasswordEncoder())
-                    .passwordAttribute(userPasswordField); //"userPassword"
+                    .passwordAttribute(userPasswordField);
         } else {
             auth
                     .userDetailsService(userService)

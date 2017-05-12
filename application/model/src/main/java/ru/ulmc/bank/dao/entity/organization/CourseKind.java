@@ -22,7 +22,7 @@ public class CourseKind {
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "ORG_COURSE_KIND_TO_FIN_CURRENCY", joinColumns = {
-            @JoinColumn(name = "COURSE_KIND_ID") }, inverseJoinColumns = { @JoinColumn(name = "CURRENCY_ID") })
+            @JoinColumn(name = "COURSE_KIND_ID")}, inverseJoinColumns = {@JoinColumn(name = "CURRENCY_ID")})
     private Collection<Currency> currencies;
 
 }

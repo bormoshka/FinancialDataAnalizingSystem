@@ -68,5 +68,4 @@ public class LdapDataService {
 
         return list;
     }
-
 }

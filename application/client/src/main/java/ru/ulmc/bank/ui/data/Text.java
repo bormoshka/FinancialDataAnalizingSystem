@@ -7,6 +7,7 @@ import ru.ulmc.bank.ui.data.provider.RuText;
  */
 public interface Text {
     Text ru = new RuText();
+
     String userName();
 
     String password();

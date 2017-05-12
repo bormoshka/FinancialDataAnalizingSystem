@@ -15,6 +15,7 @@ public class MessageReceiver implements MessageListener {
 
     /**
      * Тест
+     *
      * @param message
      */
     @Override
