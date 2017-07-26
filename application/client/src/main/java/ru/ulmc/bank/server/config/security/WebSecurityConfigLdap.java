@@ -2,6 +2,7 @@ package ru.ulmc.bank.server.config.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.ldap.core.DirContextOperations;
 import org.springframework.ldap.core.support.BaseLdapPathContextSource;
 import org.springframework.security.authentication.encoding.LdapShaPasswordEncoder;
@@ -22,7 +23,8 @@ import java.util.Collection;
  * Настройки авторизации/аутентификации
  */
 @EnableWebSecurity
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+@Profile("ldap")
+public class WebSecurityConfigLdap extends WebSecurityConfigCommon {
 
     @Value("${auth.provider}")
     private String authProvider;
@@ -66,24 +68,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .passwordCompare()
                     .passwordEncoder(new LdapShaPasswordEncoder())
                     .passwordAttribute(userPasswordField);
-        } else {
-            auth
-                    .userDetailsService(userService)
-                    .passwordEncoder(passwordEncoder);
         }
     }
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable();
-        http
-                .authorizeRequests()
-                .antMatchers("/vaadinServlet/**", "/VAADIN/**", "/auth/**", "/*").permitAll()
-                .antMatchers("/").anonymous()
-                .anyRequest().authenticated()
-                .and()
-                .formLogin().disable()
-                .logout().permitAll();
-    }
-
 }

@@ -25,4 +25,14 @@ public class CourseKind {
             @JoinColumn(name = "COURSE_KIND_ID")}, inverseJoinColumns = {@JoinColumn(name = "CURRENCY_ID")})
     private Collection<Currency> currencies;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(referencedColumnName = "ID", name = "PARENT_COURSE_KIND")
+    protected CourseKind parent;
+
+    @Column(name = "CK_NAME")
+    private String name;
+
+    @Column(name = "IS_ACTIVE")
+    private Boolean isActive;
+
 }

@@ -1,9 +1,12 @@
 package ru.ulmc.bank.server.config;
 
-import lombok.Data;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
+
+import java.io.Serializable;
+
+import lombok.Data;
 import ru.ulmc.bank.dao.entity.system.User;
 
 /**
@@ -12,7 +15,7 @@ import ru.ulmc.bank.dao.entity.system.User;
 @Data
 @Component
 @Scope(scopeName = "vaadin-session", proxyMode = ScopedProxyMode.TARGET_CLASS)
-public class UserSession {
+public class UserSession implements Serializable {
     private User user = null;
 
     public boolean isAuthenticated() {

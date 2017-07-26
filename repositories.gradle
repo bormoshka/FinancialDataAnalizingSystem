@@ -1,5 +1,5 @@
 repositories {
-    mavenLocal()
+    //mavenLocal()
     mavenCentral()
     maven { url "http://repo.maven.apache.org/maven2" }
     maven { url "http://maven.vaadin.com/vaadin-addons" }

@@ -11,5 +11,6 @@ dependencies {
             libs.sql,
             mods.model
     compileOnly libs.lombok
+    runtime libs.sqlDev
     testCompile libs.test
 }

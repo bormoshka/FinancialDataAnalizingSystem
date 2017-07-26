@@ -9,7 +9,12 @@ apply plugin: 'idea'
 apply plugin: 'java'
 apply plugin: 'maven'
 apply from: 'repositories.gradle', to: allprojects
-
+idea {
+    module {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
 allprojects {
     sourceCompatibility = '1.8'
     targetCompatibility = '1.8'
@@ -20,7 +25,7 @@ allprojects {
 
 buildscript {
     ext {
-        springBootVersion = '1.5.2.RELEASE'
+        springBootVersion = '1.5.4.RELEASE'
         libs = [
                 springBoot        : [
                         "org.springframework.boot:spring-boot-starter-aop:${springBootVersion}",
@@ -29,14 +34,16 @@ buildscript {
                 springBootMQ      : ["org.springframework.boot:spring-boot-starter-amqp:${springBootVersion}"],
                 springBootSecurity: ["org.springframework.boot:spring-boot-starter-security:${springBootVersion}",
                                      "org.springframework.security:spring-security-ldap:+"],
-                springBootWeb     : ["org.springframework.boot:spring-boot-starter-web:${springBootVersion}"],
+                springBootWeb     : ["org.springframework.boot:spring-boot-starter-web:${springBootVersion}",
+                                     "org.springframework.boot:spring-boot-starter-tomcat:${springBootVersion}"],
                 springBootJpa     : [
                         "org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}"
                 ],
                 sql               : "org.postgresql:postgresql:+",
+                sqlDev            : "org.hsqldb:hsqldb:+",
                 gson              : "com.google.code.gson:gson:2.7",
                 guava             : 'com.google.guava:guava:21.0',
-                javax             : "javax.servlet:javax.servlet-api:3.0.1",
+                javax             : ["javax.servlet:javax.servlet-api:+"],
                 test              : "org.springframework.boot:spring-boot-starter-test:${springBootVersion}",
                 lombok            : "org.projectlombok:lombok:1.16.16",
                 vaadin            : ["com.vaadin:vaadin-spring-boot-starter:+",

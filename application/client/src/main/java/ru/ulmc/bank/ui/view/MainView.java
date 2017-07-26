@@ -41,7 +41,7 @@ public class MainView extends HorizontalLayout {
 
         userGrid.setDataProvider(DataProvider.ofItems(userSession.getUser()));
 
-        Collection<LdapAttribute> attrsMap = controllers.getLdapController().getUserAttributes(
+        /*Collection<LdapAttribute> attrsMap = controllers.getLdapController().getUserAttributes(
                 userSession.getUser().getLogin());
         Grid<LdapAttribute> attributesGrid = new Grid<>();
         attributesGrid.addColumn(LdapAttribute::getId).setCaption("Атрибут");
@@ -62,6 +62,6 @@ public class MainView extends HorizontalLayout {
                         new Label("Атрибуты пользователя из LDAP"),
                         attributesGrid));
         addComponent(content);
-        setExpandRatio(content, 1.0f);
+        setExpandRatio(content, 1.0f);*/
     }
 }

@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.ldap.core.AttributesMapper;
 import org.springframework.ldap.core.DirContextOperations;
 import org.springframework.ldap.core.LdapTemplate;
@@ -23,6 +24,7 @@ import static org.springframework.ldap.query.LdapQueryBuilder.query;
  * Контроллер аутентификации
  */
 @Controller
+@Profile("ldap")
 public class LdapDataService {
     private static final Logger LOG = LoggerFactory.getLogger(LdapDataService.class);
     private final LdapTemplate ldapTemplate;

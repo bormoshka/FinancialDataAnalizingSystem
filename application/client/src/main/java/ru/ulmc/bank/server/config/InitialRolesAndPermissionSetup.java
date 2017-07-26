@@ -26,7 +26,7 @@ import java.util.Set;
  * Класс, отвечающий за инициализацию пользовательский холей и разрешений.
  */
 @Component
-@Profile("develop")
+@Profile("dev")
 public class InitialRolesAndPermissionSetup implements ApplicationListener<ContextRefreshedEvent> {
 
     private final UserRepository userRepository;
