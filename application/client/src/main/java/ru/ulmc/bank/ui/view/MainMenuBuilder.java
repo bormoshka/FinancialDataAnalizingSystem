@@ -94,6 +94,7 @@ public class MainMenuBuilder {
     }
 
     private void setupMainMenuItems() {
+        createSubmenuItem(mainMenu, HomeView.MENU_SUPPORT);
         MenuBar.MenuItem brand = mainMenu.addItem("FXP", VaadinIcons.MONEY_EXCHANGE, null);
         brand.setEnabled(false);
         brand.setStyleName("brand");
@@ -129,8 +130,7 @@ public class MainMenuBuilder {
         MenuBar.MenuItem refMenu = mainMenu.addItem("Справочники", VaadinIcons.BOOK, null);
 
         MenuBar.Command cmd = this::addToLastItemsMenuBar;
-       // createSubmenuItem(refMenu, CurrencyPairsView.MENU_SUPPORT);
-        //createSubmenuItem(refMenu, SymbolsView.MENU_SUPPORT);
+        createSubmenuItem(refMenu, CurrencyPairsView.MENU_SUPPORT);
 
         refMenu.addItem("Reference 3", cmd);
         refMenu.addItem("Reference 4", cmd);
@@ -140,6 +140,13 @@ public class MainMenuBuilder {
     }
 
     private void createSubmenuItem(MenuBar.MenuItem parent, MenuSupport menuSupport) {
+        viewNameToItem.put(menuSupport.getName(), parent.addItem(menuSupport.getTitle(), item -> {
+            commonMenuActions(item, menuSupport);
+        }));
+        viewNameToMenuSupport.put(menuSupport.getName(), menuSupport);
+    }
+
+    private void createSubmenuItem(MenuBar parent, MenuSupport menuSupport) {
         viewNameToItem.put(menuSupport.getName(), parent.addItem(menuSupport.getTitle(), item -> {
             commonMenuActions(item, menuSupport);
         }));

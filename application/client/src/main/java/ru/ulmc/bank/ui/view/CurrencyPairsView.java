@@ -3,6 +3,7 @@ package ru.ulmc.bank.ui.view;
 import com.vaadin.data.provider.DataProvider;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.event.selection.SelectionEvent;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Alignment;
@@ -38,7 +39,7 @@ import ru.ulmc.bank.server.controller.CurrencyController;
 @SpringView(name = CurrencyPairsView.NAME)
 public class CurrencyPairsView extends CustomComponent implements View {
     public static final String NAME = "cpv";
-    public static final MenuSupport MENU_SUPPORT = new MenuSupport(NAME, "Настройка валютных пар");
+    public static final MenuSupport MENU_SUPPORT = new MenuSupport(NAME, "Настройка валютных пар", VaadinIcons.COIN_PILES);
 
     private static final Logger LOG = LoggerFactory.getLogger(CurrencyPairsView.class);
     private final Grid<CurrencyPairDto> grid = new Grid<>();

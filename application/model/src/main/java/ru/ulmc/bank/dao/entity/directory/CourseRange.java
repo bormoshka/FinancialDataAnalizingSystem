@@ -6,7 +6,7 @@ import lombok.Setter;
 import javax.persistence.*;
 
 /**
- * Диапазон курса валют
+ * Диапазон действия курса валют.
  */
 @Getter
 @Entity

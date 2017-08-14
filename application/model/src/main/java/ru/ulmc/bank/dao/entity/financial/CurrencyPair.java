@@ -6,7 +6,7 @@ import ru.ulmc.bank.dao.entity.directory.CourseRange;
 import javax.persistence.*;
 
 /**
- * Валютная пара
+ * Валютная пара. Отношение первой валюты ко второй. Покупка/продажа первой за вторую.
  */
 @Data
 @Entity

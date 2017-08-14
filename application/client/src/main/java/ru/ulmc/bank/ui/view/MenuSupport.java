@@ -1,5 +1,7 @@
 package ru.ulmc.bank.ui.view;
 
+import com.vaadin.icons.VaadinIcons;
+import com.vaadin.server.FontIcon;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -8,4 +10,5 @@ import lombok.Getter;
 public class MenuSupport {
     private String name;
     private String title;
+    private FontIcon icon;
 }
