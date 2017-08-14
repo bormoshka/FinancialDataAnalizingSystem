@@ -8,10 +8,18 @@ import com.vaadin.server.*;
 import com.vaadin.shared.ui.window.WindowRole;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.spring.navigator.SpringNavigator;
+import com.vaadin.spring.navigator.SpringViewProvider;
 import com.vaadin.spring.server.SpringVaadinServlet;
+import com.vaadin.ui.AbstractLayout;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
+
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.vaadin.spring.security.VaadinSecurity;
+
 import ru.ulmc.bank.core.common.exception.AuthenticationException;
 import ru.ulmc.bank.dao.entity.system.User;
 import ru.ulmc.bank.server.config.UserSession;
@@ -21,9 +29,11 @@ import ru.ulmc.bank.ui.data.Text;
 import ru.ulmc.bank.ui.data.provider.RuText;
 import ru.ulmc.bank.ui.event.UiEventBus;
 import ru.ulmc.bank.ui.event.UiEvents;
+import ru.ulmc.bank.ui.view.HomeView;
 import ru.ulmc.bank.ui.view.LoginView;
-import ru.ulmc.bank.ui.view.MainView;
+import ru.ulmc.bank.ui.view.MainMenuBuilder;
 
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 
@@ -38,17 +48,21 @@ import javax.servlet.http.HttpServletRequest;
 @Title("Система Управления Котировками")
 @Theme("bank")
 public class AppUI extends UI {
-
+    private final static Logger LOGGER = Logger.getLogger(AppUI.class.getName());
     private static Text text = new RuText();
     private final UiEventBus uiEventBus = new UiEventBus();
     @Autowired
     private Controllers controllers;
     @Autowired
-    private MainView mainView;
+    private SpringViewProvider viewProvider;
     @Autowired
-    private UserSession userSession;
+    private VaadinSecurity vaadinSecurity;
     @Autowired
     private SpringNavigator navigator;
+
+    private MainMenuBuilder menu;
+    private Panel content = new Panel();
+    private VerticalLayout topLevelLayout = new VerticalLayout();
 
     public static UiEventBus getDashboardEventbus() {
         return ((AppUI) getCurrent()).uiEventBus;
@@ -70,46 +84,88 @@ public class AppUI extends UI {
     }
 
     private void setupUiBasedOnUserStatus() {
-        if (userSession.isAuthenticated()) {
-            mainView.initView(userSession);
-            setContent(mainView);
-            // getNavigator().navigateTo(getNavigator().getState());
+        if (isUserAuthenticated()) {
+            topLevelLayout.addStyleName("no-padding");
+            topLevelLayout.setSpacing(false);
+            topLevelLayout.setSizeFull();
+            //content.addStyleName("content-padding");
+            setContent(topLevelLayout);
+            navigator.init(this, content);
+            navigator.addProvider(viewProvider);
+            if (navigator.getState() == null || navigator.getState().isEmpty()) {
+                navigator.navigateTo(HomeView.NAME);
+            } else {
+                navigator.navigateTo(navigator.getState());
+            }
+            initMenu();
+            initContent();
         } else {
-            setContent(new LoginView(controllers));
+            setContent(new LoginView(vaadinSecurity));
         }
     }
 
-    @Subscribe
-    public void userLoginRequested(UiEvents.UserLoginRequestedEvent event) {
+    private void initContent() {
+        //content.addStyleName("content-body");
+        content.setSizeFull();
+        content.setCaption(menu.getMenuSupport(navigator.getState()).getTitle());
+        VerticalLayout vl = new VerticalLayout(content);
+        vl.setSpacing(false);
+        vl.setSizeFull();
+        topLevelLayout.addComponent(vl);
+        topLevelLayout.setExpandRatio(vl, 10);
+    }
+
+    private void initMenu() {
+        menu = new MainMenuBuilder(navigator);
+        AbstractLayout menuBar = menu.addReferenceGroup()
+                .addOtherGroups()
+                .addRightMenu(getUserName(), this)
+                .build();
+        topLevelLayout.addComponent(menuBar);
+        topLevelLayout.setExpandRatio(menuBar, 0);
+
+    }
+
+    private boolean isUserAuthenticated() {
+        return isAuthEnabled()
+                && vaadinSecurity.isAuthenticated()
+                && !vaadinSecurity.isAuthenticatedAnonymously();
+    }
+
+    private boolean isAuthEnabled() {
+        return vaadinSecurity.getAuthentication() != null;
+    }
+
+    private String getUserName() {
+        String userName = "unknown";
         try {
-            final HttpServletRequest request = ((VaadinServletRequest) VaadinService.getCurrentRequest())
-                    .getHttpServletRequest();
-            User user = controllers.getAuthenticationController().authenticate(event.getUserName(), event.getPassword(), request);
-            userSession.setUser(user);
-            VaadinSession.getCurrent().setAttribute(User.class.getName(), user);
-            Page.getCurrent().reload();
-        } catch (AuthenticationException ex) {
-            final MessageWindow window = new MessageWindow(text.authErrorHeader());
-            window.setText(ex.isSystemFault() ?
-                    text.authErrorSystemFault(ex.getMessage()) :
-                    text.authErrorBaseText());
-            window.setAssistiveRole(WindowRole.ALERTDIALOG);
-            addWindow(window);
-        } finally {
-            UiEventBus.post(new UiEvents.UserLoginResponseEvent());
+            if (vaadinSecurity.getAuthentication() != null) {
+                userName = vaadinSecurity.getAuthentication().getName();
+            } else {
+                LOGGER.warn("Аутентификация отключена");
+            }
+        } catch (Exception ex) {
+            LOGGER.error("Не удалось получить имя пользователя", ex);
         }
-    }
 
-    @Subscribe
-    public void userLoggedOut(UiEvents.UserLoggedOutEvent event) {
-        VaadinSession.getCurrent().close();
-        Page.getCurrent().reload();
+        return userName;
     }
 
     @WebServlet(urlPatterns = {"/*", "/VAADIN/*"}, name = "AppServlet", asyncSupported = true)
     @VaadinServletConfiguration(ui = AppUI.class, productionMode = false)
     public static class AppServlet extends SpringVaadinServlet {
-
+        @Override
+        protected void servletInitialized() throws ServletException {
+            super.servletInitialized();
+            getService().setSystemMessagesProvider((SystemMessagesProvider) systemMessagesInfo -> {
+                CustomizedSystemMessages messages = new CustomizedSystemMessages();
+                // Don't show any messages, redirect immediately to the session expired URL
+                messages.setSessionExpiredNotificationEnabled(false);
+                // Don't show any message, reload the page instead
+                messages.setCommunicationErrorNotificationEnabled(false);
+                return messages;
+            });
+        }
     }
 
 }

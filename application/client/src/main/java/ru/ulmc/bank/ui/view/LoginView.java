@@ -8,6 +8,9 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.AuthenticationException;
+import org.vaadin.spring.security.VaadinSecurity;
+
 import ru.ulmc.bank.server.controller.Controllers;
 import ru.ulmc.bank.ui.AppUI;
 import ru.ulmc.bank.ui.data.Text;
@@ -20,10 +23,10 @@ public class LoginView extends VerticalLayout {
 
     private Button signIn;
 
-    private Controllers controllers;
+    private VaadinSecurity security;
 
-    public LoginView(Controllers controllers) {
-        this.controllers = controllers;
+    public LoginView(VaadinSecurity security) {
+        this.security = security;
         text = AppUI.getTextProvider();
         setSizeFull();
         UiEventBus.register(this);
@@ -75,7 +78,21 @@ public class LoginView extends VerticalLayout {
         fields.addComponents(title, username, password, signIn);
 
         signIn.addClickListener((Button.ClickListener) event -> {
-            UiEventBus.post(new UiEvents.UserLoginRequestedEvent(username.getValue(), password.getValue()));
+            try {
+                signIn.setEnabled(false);
+                security.login(username.getValue(), password.getValue());
+            } catch (AuthenticationException ex) {
+                username.focus();
+                username.selectAll();
+                password.setValue("");
+                Notification.show("Ошибка авторизации: ", ex.getMessage(), Notification.Type.ERROR_MESSAGE);
+                logger.error("AuthenticationException: ", ex);
+            } catch (Exception ex) {
+                Notification.show("An unexpected error occurred", ex.getMessage(), Notification.Type.ERROR_MESSAGE);
+                logger.error("unexpected error: ", ex);
+            } finally {
+                signIn.setEnabled(true);
+            }
         });
         return fields;
     }

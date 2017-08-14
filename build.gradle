@@ -46,11 +46,14 @@ buildscript {
                 javax             : ["javax.servlet:javax.servlet-api:+"],
                 test              : "org.springframework.boot:spring-boot-starter-test:${springBootVersion}",
                 lombok            : "org.projectlombok:lombok:1.16.16",
-                vaadin            : ["com.vaadin:vaadin-spring-boot-starter:+",
-                                     'org.vaadin:spinkit:+',
-                                     'com.vaadin:vaadin-sass-compiler:+'
-                                     // "com.vaadin:vaadin-client:+",
-                                     //  "com.vaadin:vaadin-client-compiler:+"
+                vaadin            : ["com.vaadin:vaadin-server:8.1.0",
+                                     "com.vaadin:vaadin-shared:8.1.0",
+                                     "com.vaadin:vaadin-spring-boot:2.0.0",
+                                     "com.vaadin:vaadin-themes:8.1.0",
+                                     "com.vaadin:vaadin-client-compiled:8.1.0",
+                                     "org.vaadin.spring.extensions:vaadin-spring-ext-boot:2.0.0.RELEASE",
+                                     "org.vaadin.spring.extensions:vaadin-spring-ext-core:2.0.0.RELEASE",
+                                     "org.vaadin.spring.extensions:vaadin-spring-ext-security:2.0.0.RELEASE"
                 ],
                 vaadinProvided    : ["com.vaadin:vaadin-client:+"]
         ]

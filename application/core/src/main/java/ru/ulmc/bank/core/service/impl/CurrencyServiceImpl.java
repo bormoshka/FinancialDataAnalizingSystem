@@ -2,8 +2,14 @@ package ru.ulmc.bank.core.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import ru.ulmc.bank.dao.entity.financial.Currency;
 import ru.ulmc.bank.dao.entity.financial.CurrencyAttributes;
+import ru.ulmc.bank.dao.entity.financial.CurrencyPair;
 import ru.ulmc.bank.dao.repository.CurrencyAttributesRepository;
 import ru.ulmc.bank.dao.repository.CurrencyRepository;
 

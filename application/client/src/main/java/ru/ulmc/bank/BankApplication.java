@@ -18,14 +18,5 @@ public class BankApplication {
     public static void main(String[] args) {
         SpringApplication.run(BankApplication.class, args);
     }
-
-    @Bean
-    @Profile("dev")
-    public DataSource dataSource() {
-        EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
-        return builder
-                .setType(EmbeddedDatabaseType.HSQL)
-                .build();
-    }
 }
 

@@ -11,5 +11,6 @@ public class Perms {
     public static final String SYS_USER_READ = "SYS_USER_READ";
 
     public static final String CHECK_FIN_CURRENCY_READ = "hasAuthority('" + Perms.FIN_CURRENCY_READ + "')";
+    public static final String CHECK_FIN_CURRENCY_WRITE = "hasAuthority('" + Perms.FIN_CURRENCY_WRITE + "')";
 
 }

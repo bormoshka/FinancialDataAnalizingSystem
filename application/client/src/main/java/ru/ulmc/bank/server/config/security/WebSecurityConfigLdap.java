@@ -15,6 +15,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.ldap.userdetails.LdapUserDetailsImpl;
 import org.springframework.security.ldap.userdetails.LdapUserDetailsMapper;
+import org.vaadin.spring.security.annotation.EnableVaadinSharedSecurity;
+
 import ru.ulmc.bank.core.service.impl.UserServiceImpl;
 
 import java.util.Collection;
@@ -23,6 +25,7 @@ import java.util.Collection;
  * Настройки авторизации/аутентификации
  */
 @EnableWebSecurity
+@EnableVaadinSharedSecurity
 @Profile("ldap")
 public class WebSecurityConfigLdap extends WebSecurityConfigCommon {
 
